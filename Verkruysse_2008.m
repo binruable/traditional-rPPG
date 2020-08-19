@@ -1,5 +1,7 @@
 VideoFile = 'video.avi';  %要预测的视频
 FS = 25;                  %视频采样率
+StartTime = 0;    %视频开始时间
+Duration = 26;    %视频持续时间
 LPF = 0.7; %低截止频率
 HPF = 2.5; %高截止频率
 VidObj = VideoReader(VideoFile);
@@ -31,9 +33,8 @@ N = (60*2*Nyquist)/FResBPM;
 % 估计功率谱密度（PSD）
 [Pxx,F] = periodogram(BVP,hamming(length(BVP)),N,FS);
 FMask = (F >= (LL_PR/60))&(F <= (UL_PR/60));
-
 FRange = F(FMask);
 PRange = Pxx(FMask);
-MaxInd = argmax(Pxx(FMask),1);
+[~,MaxInd] = max(Pxx(FMask),[],1);
 PR_F = FRange(MaxInd);
 HR = PR_F*60;   %预测出来的心率
