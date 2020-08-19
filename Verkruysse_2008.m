@@ -19,7 +19,7 @@ while hasFrame(VidObj) && (VidObj.CurrentTime <= StartTime+Duration)
 end
 BVP = RGB(:,2);  %提取整个视频的绿色通道
 NyquistF = 1/2*FS;
-[B,A] = butter(3,[LPF/NyquistF HPF/NyquistF]);%Butterworth 3rd order filter - originally specified in reference with a 4th order butterworth using filtfilt function
+[B,A] = butter(3,[LPF/NyquistF HPF/NyquistF]);%3阶带通滤波器
 BVP_F = filtfilt(B,A,(double(BVP)-mean(BVP)));
 BVP = BVP_F;  %过滤之后的绿色通道
 
