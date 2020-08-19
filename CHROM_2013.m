@@ -1,11 +1,10 @@
 addpath(genpath([cd '\test_data\']))
-addpath(genpath([cd '\tools\']))
-VideoFile = 'video.avi';  %ÒªÔ¤²âµÄÊÓÆµ
-FS = 25;                  %ÊÓÆµ²ÉÑùÂÊ
-StartTime = 0;  %ÊÓÆµ¿ªÊ¼Ê±¼ä
-Duration = 26;  %ÊÓÆµ½áÊøÊ±¼ä
-LPF = 0.7; %µÍ½ØÖ¹ÆµÂÊ
-HPF = 2.5; %¸ß½ØÖ¹ÆµÂÊ
+VideoFile = 'video.avi';  %è¦é¢„æµ‹çš„è§†é¢‘
+FS = 25;                  %è§†é¢‘é‡‡æ ·ç‡
+StartTime = 0;  %è§†é¢‘å¼€å§‹æ—¶é—´
+Duration = 26;  %è§†é¢‘ç»“æŸæ—¶é—´
+LPF = 0.7; %ä½æˆªæ­¢é¢‘ç‡
+HPF = 2.5; %é«˜æˆªæ­¢é¢‘ç‡
 WinSec=1.6;
 VidObj = VideoReader(VideoFile);
 VidObj.CurrentTime = StartTime;
@@ -18,10 +17,10 @@ while hasFrame(VidObj) && (VidObj.CurrentTime <= StartTime+Duration)
     T(FN) = VidObj.CurrentTime;
     VidFrame = readFrame(VidObj);
     
-    %ÈËÁ³¼ì²â
+    %äººè„¸æ£€æµ‹
     VidROI = VidFrame;
     SkinSegmentTF = false;
-    if(SkinSegmentTF)%Æ¤·ô·Ö¸î£¨´Ë´úÂëÎ´ÊµÏÖ£©
+    if(SkinSegmentTF)%çš®è‚¤åˆ†å‰²ï¼ˆæ­¤ä»£ç æœªå®ç°ï¼‰
         YCBCR = rgb2ycbcr(VidROI);
         Yth = YCBCR(:,:,1)>80;
         CBth = (YCBCR(:,:,2)>77).*(YCBCR(:,:,2)<127);
@@ -38,28 +37,28 @@ NyquistF = 1/2*FS;
 
 %50% overlap
 WinL = ceil(WinSec*FS);
-if(mod(WinL,2))%Ê¹´°¿Ú´óĞ¡¾ùÔÈÖØµş£¬Ôö¼ÓººÄş¼Ó´°ĞÅºÅ
+if(mod(WinL,2))%ä½¿çª—å£å¤§å°å‡åŒ€é‡å ï¼Œå¢åŠ æ±‰å®åŠ çª—ä¿¡å·
     WinL=WinL+1;
 end
 NWin = floor((FN-WinL/2)/(WinL/2));
 S = zeros(NWin,1);
-WinS = 1;%¿ªÊ¼´°¿ÚË÷Òı
-WinM = WinS+WinL/2;%ÖĞ¼ä´°¿ÚË÷Òı
-WinE = WinS+WinL-1;%½áÊø´°¿ÚË÷Òı
+WinS = 1;%å¼€å§‹çª—å£ç´¢å¼•
+WinM = WinS+WinL/2;%ä¸­é—´çª—å£ç´¢å¼•
+WinE = WinS+WinL-1;%ç»“æŸçª—å£ç´¢å¼•
 
 for i = 1:NWin
     TWin = T(WinS:WinE,:);
     RGBBase = mean(RGB(WinS:WinE,:));
     RGBNorm = bsxfun(@times,RGB(WinS:WinE,:),1./RGBBase)-1;
     % CHROM
-    Xs = squeeze(3*RGBNorm(:,1)-2*RGBNorm(:,2));%ÂÛÎÄÖĞÊ½×Ó3Rn-2Gn
+    Xs = squeeze(3*RGBNorm(:,1)-2*RGBNorm(:,2));%è®ºæ–‡ä¸­å¼å­3Rn-2Gn
     Ys = squeeze(1.5*RGBNorm(:,1)+RGBNorm(:,2)-1.5*RGBNorm(:,3));%1.5Rn+Gn-1.5Bn
     Xf = filtfilt(B,A,double(Xs));
     Yf = filtfilt(B,A,double(Ys));
     Alpha = std(Xf)./std(Yf);
     SWin = Xf - Alpha.*Yf;
     SWin = hann(WinL).*SWin;
-    %ººÃ÷´°ÖØµş
+    %æ±‰æ˜çª—é‡å 
     if(i==1)
         S = SWin;
         TX = TWin;
@@ -74,16 +73,16 @@ for i = 1:NWin
 end
 BVP=S;
 
-LL_PR = 40;  %×îµÍbpm
-UL_PR = 200; %×î¸ßbpm
+LL_PR = 40;  %æœ€ä½bpm
+UL_PR = 200; %æœ€é«˜bpm
 Nyquist = FS/2;
 FResBPM = 0.5; 
 N = (60*2*Nyquist)/FResBPM;
-% ¹À¼Æ¹¦ÂÊÆ×ÃÜ¶È£¨PSD£©
+% ä¼°è®¡åŠŸç‡è°±å¯†åº¦ï¼ˆPSDï¼‰
 [Pxx,F] = periodogram(BVP,hamming(length(BVP)),N,FS);
 FMask = (F >= (LL_PR/60))&(F <= (UL_PR/60));
 FRange = F(FMask);
 PRange = Pxx(FMask);
 [~,MaxInd] = max(Pxx(FMask),[],1);
 PR_F = FRange(MaxInd);
-HR = PR_F*60;   %Ô¤²â³öÀ´µÄĞÄÂÊ
+HR = PR_F*60;   %é¢„æµ‹å‡ºæ¥çš„å¿ƒç‡
