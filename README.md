@@ -8,11 +8,6 @@ Four traditional remote heart rate estimates
 <br></br> 
 <br></br> 
 <br></br> 
-<br></br> 
-<br></br> 
-<br></br> 
-<br></br> 
-<br></br> 
 
 ## deep-learning(No source code, just reference)
 
