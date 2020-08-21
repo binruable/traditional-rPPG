@@ -5,5 +5,5 @@ Four traditional remote heart rate estimates
 <img src="./pic/HR.png" width="500" height="300" alt="predict" align="right">
 ## deep-learning(No source code, just reference)
 <img src="./pic/ROI.png" width="280" height="300" alt="video" align="left">
-<img src="./pic/0003_3.png" width="500" height="280" alt="predict" align="right">
+<img src="./pic/0003_3.jpg" width="500" height="280" alt="predict" align="right">
 
