@@ -2,9 +2,8 @@
 Four traditional remote heart rate estimates
 
 ## traditional
-<br></br> 
 <img src=".\pic\1111.png" width="400" height="400" alt="video" align ="left"><img src=".\pic\psd.png" width="500" height="280" alt="predict" align="right">
-</br></br></br>
+<br></br>
 <img src=".\pic\psd_dB.png" width="500" height="280" alt="predict" align="right">
 </br> 
 <br></br> 
@@ -12,6 +11,9 @@ Four traditional remote heart rate estimates
 <br></br> 
 <br></br> 
 <br></br><br></br><br></br><br></br>
+<br></br>
+<br></br>
+<br></br>
 
 ## deep-learning(No source code, just reference)
 
